@@ -1,0 +1,63 @@
+# Publish Bicep files to the registry
+
+name: Publish Bicep files to the registry
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push events related to bicep or parameter files on the main branch
+  push:
+    branches: [ main ]
+    paths:
+      - '**.bicep'
+      - '**.parameters.json'
+
+jobs:
+  # Publish Bicep files to the registry
+  PublishBicepToRegistry:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+  
+      # Login to the Azure sub with the service principal credentials contained in the AZCRED secret
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZCRED }}
+          enable-AzPSSession: true
+
+      steps:
+        - uses: rymndhng/release-on-push-action@master
+          with:
+            bump_version_scheme: minor
+            tag_prefix: v
+                     
+      # Push the modified Bicep files to the registry
+      - name: Publish Bicep files to the Bicep registry
+        if: ${{ success() }}
+        env:
+          # The name of the target Azure Container Registry
+          AZURE_BR_URI: 'acr43208.azurecr.io'
+
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |      
+            
+
+            # Get the pushed bicep file and publish it into the registry.
+
+            $moduleName = (Get-Item *.bicep).Name.Replace(".bicep", "")
+              
+            # Concat the target name
+
+            $target = "br:{0}/modules/{1}:v{2}" -f "${{ env.AZURE_BR_URI }}", $moduleName.toLower(), "${{ steps.release.outputs.tag_name }}"
+
+            # Use Bicep CLI to publish each file
+
+            bicep publish $moduleName --target $target
+              
+          azPSVersion: "latest"
