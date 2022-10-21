@@ -1,5 +1,5 @@
 @description('The name of the webapp')
-param name string
+param webAppNamePrefix string
 
 @description('The Azure region where resources will be deployed')
 param location string = resourceGroup().location
@@ -19,7 +19,7 @@ param environment string
 
 var hostingPlanName = 'hostingPlan-${environment}-${location}'
 
-var webAppName = '${name}-${environment}-${location}'
+var webAppName = '${webAppNamePrefix}-${environment}-${location}'
 
 var environmentSettings = {
   TEST: {
