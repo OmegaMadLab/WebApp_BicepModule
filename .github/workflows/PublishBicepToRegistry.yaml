@@ -28,6 +28,7 @@ jobs:
           enable-AzPSSession: true
 
       - name: Apply tag
+        id: applytag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: rymndhng/release-on-push-action@master
@@ -55,7 +56,7 @@ jobs:
               
             # Concat the target name
 
-            $target = "br:{0}/modules/{1}:v{2}" -f "${{ env.AZURE_BR_URI }}", $moduleName.toLower(), "${{ steps.release.outputs.tag_name }}"
+            $target = "br:{0}/modules/{1}:{2}" -f "${{ env.AZURE_BR_URI }}", $moduleName.toLower(), "${{ steps.applytag.outputs.tag_name }}"
 
             # Use Bicep CLI to publish each file
 
