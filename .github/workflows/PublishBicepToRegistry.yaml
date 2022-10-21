@@ -46,10 +46,12 @@ jobs:
         with:
           inlineScript: |      
             
+            $ErrorActionPreference = "Stop"
 
             # Get the pushed bicep file and publish it into the registry.
 
             $moduleName = (Get-Item *.bicep).Name.Replace(".bicep", "")
+            $moduleFileName = (Get-Item *.bicep).Name
               
             # Concat the target name
 
@@ -57,6 +59,6 @@ jobs:
 
             # Use Bicep CLI to publish each file
 
-            bicep publish $moduleName --target $target
+            bicep publish $moduleFileName --target $target
               
           azPSVersion: "latest"
