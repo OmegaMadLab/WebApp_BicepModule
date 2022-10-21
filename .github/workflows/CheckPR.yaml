@@ -46,7 +46,7 @@ jobs:
             
             # Validate deployment
 
-            Test-AzResourceGroupDeployment -Name $moduleFileName `
+            Test-AzResourceGroupDeployment `
               -ResourceGroupName '${{ env.AZURE_RESOURCEGROUP_NAME }}' `
               -TemplateFile $moduleFileName `
               -TemplateParameterFile $paramFileName
