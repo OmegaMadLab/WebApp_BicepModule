@@ -6,9 +6,6 @@ on:
   # Triggers the workflow on push events related to bicep and parameter files on all the branches except the main one
   push:
     branches: [ dev ]
-    paths:
-      - '**.bicep'
-      - '**.parameters.json'
 
 jobs:
   # This workflow contains a single job called "build"
