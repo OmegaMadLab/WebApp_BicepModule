@@ -36,7 +36,7 @@ New-AzRoleAssignment -ApplicationId $servicePrincipal.AppId `
 
 $output = @{
    clientId = $($servicePrincipal.AppId)
-   clientSecret = $([System.Net.NetworkCredential]::new('', $servicePrincipal.Secret).Password)
+   clientSecret = $([System.Net.NetworkCredential]::new('', $servicePrincipal.PasswordCredentials[0].SecretText).Password)
    subscriptionId = $($azureContext.Subscription.Id)
    tenantId = $($azureContext.Tenant.Id)
 }
