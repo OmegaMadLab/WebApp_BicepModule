@@ -6,9 +6,6 @@ on:
   # Triggers the workflow pull request events for the dev branch that includes bicep or parameter files 
   pull_request:
     branches: [ dev, main ]
-    paths:
-      - '**.bicep'
-      - '**.parameters.json'
 
 jobs:
   # Check the PR
