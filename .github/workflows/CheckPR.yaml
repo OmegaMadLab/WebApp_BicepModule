@@ -49,6 +49,6 @@ jobs:
             Test-AzResourceGroupDeployment -Name $moduleFileName `
               -ResourceGroupName '${{ env.AZURE_RESOURCEGROUP_NAME }}' `
               -TemplateFile $moduleFileName `
-              -TemplateParameterFile $paramFileName `
+              -TemplateParameterFile $paramFileName
 
           azPSVersion: "latest"
