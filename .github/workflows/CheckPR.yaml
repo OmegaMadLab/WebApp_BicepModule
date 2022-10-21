@@ -35,10 +35,6 @@ jobs:
         with:
           inlineScript: |   
             
-            # Get all the bicep and parameters files pushed to the modules folder.
-            # All the pushed bicep files will be deployed with the what-if option.
-            # All the pushed parameter files will trigger a deploy with the what-if option for the related bicep file.
-
             $moduleFileName = (Get-Item *.bicep).Name
             $paramFileName = $modulefilename.Replace(".bicep", ".parameters.json")
               
