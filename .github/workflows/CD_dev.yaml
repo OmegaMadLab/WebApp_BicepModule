@@ -43,7 +43,7 @@ jobs:
             }
             
             # Validate deployment
-            Test-AzResourceGroupDeployment -Name $moduleFileName `
+            Test-AzResourceGroupDeployment `
               -ResourceGroupName '${{ env.AZURE_RESOURCEGROUP_NAME }}' `
               -TemplateFile $moduleFileName `
               -TemplateParameterFile $paramFileName 
@@ -63,7 +63,7 @@ jobs:
             $paramFileName = $modulefilename.Replace(".bicep", ".parameters.json")
             
             # Execute deployment
-            New-AzResourceGroupDeployment -Name $moduleName `
+            New-AzResourceGroupDeployment -Name $moduleFileName `
               -ResourceGroupName '${{ env.AZURE_RESOURCEGROUP_NAME }}' `
               -TemplateFile $moduleFileName `
               -TemplateParameterFile $paramFileName
