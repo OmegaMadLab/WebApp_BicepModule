@@ -1,0 +1,51 @@
+# Check Pull Request
+
+name: Check Pull Request on DEV
+# Controls when the workflow will run
+on:
+  # Triggers the workflow pull request events for the dev branch that includes bicep or parameter files 
+  pull_request:
+    branches: [ dev, main ]
+
+jobs:
+  # Check the PR
+  CheckPR:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Login to the Azure sub with the service principal credentials contained in the AZCRED secret
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZCRED }}
+          enable-AzPSSession: true
+
+      # Perform a test deployment to validate linting and pre-flight checks
+      - name: Validate the bicep file
+        env:
+          AZURE_RESOURCEGROUP_NAME: 'WebAppBicep-TestModule-RG'
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |   
+            
+            $moduleFileName = (Get-Item *.bicep).Name
+            $paramFileName = $modulefilename.Replace(".bicep", ".parameters.json")
+              
+            # if the repo doesn't contain a parameter file for the bicep file, throw an exception
+
+            if (-not (Test-Path $paramFileName)) {
+              Throw "Please provide a parameter file $paramFileName to test the module $moduleName."
+            }
+            
+            # Validate deployment
+
+            Test-AzResourceGroupDeployment `
+              -ResourceGroupName '${{ env.AZURE_RESOURCEGROUP_NAME }}' `
+              -TemplateFile $moduleFileName `
+              -TemplateParameterFile $paramFileName
+
+          azPSVersion: "latest"
