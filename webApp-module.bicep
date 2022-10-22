@@ -50,4 +50,4 @@ resource webApp 'Microsoft.Web/sites@2020-12-01' = {
 }
 
 output webAppId string  = webApp.id
-output webAppUri string = webApp.properties.defaultHostName
+// output webAppUri string = webApp.properties.defaultHostName
