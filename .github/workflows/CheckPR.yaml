@@ -1,11 +1,11 @@
 # Check Pull Request
 
-name: Check Pull Request on DEV
+name: Check Pull Request
 # Controls when the workflow will run
 on:
-  # Triggers the workflow pull request events for the dev branch that includes bicep or parameter files 
+  # Triggers the workflow pull request events on the main
   pull_request:
-    branches: [ dev, main ]
+    branches: [ main ]
 
 jobs:
   # Check the PR
@@ -44,6 +44,26 @@ jobs:
             # Validate deployment
 
             Test-AzResourceGroupDeployment `
+              -ResourceGroupName '${{ env.AZURE_RESOURCEGROUP_NAME }}' `
+              -TemplateFile $moduleFileName `
+              -TemplateParameterFile $paramFileName
+
+          azPSVersion: "latest"
+
+      # Perform a deployment against a resource group to test the module
+      - name: Deploy the modified bicep files to the test environment
+        if: ${{ success() }}
+        env:
+          AZURE_RESOURCEGROUP_NAME: 'WebAppBicep-TestModule-RG'
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |      
+          
+            $moduleFileName = (Get-Item *.bicep).Name
+            $paramFileName = $modulefilename.Replace(".bicep", ".parameters.json")
+            
+            # Execute deployment
+            New-AzResourceGroupDeployment -Name $moduleFileName `
               -ResourceGroupName '${{ env.AZURE_RESOURCEGROUP_NAME }}' `
               -TemplateFile $moduleFileName `
               -TemplateParameterFile $paramFileName
